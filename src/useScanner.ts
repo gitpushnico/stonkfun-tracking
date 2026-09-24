@@ -89,9 +89,12 @@ export function useScanner() {
         maxPages: target,
         cutoff,
         signal: controller.signal,
-        onProgress: (loaded, max) => {
+        onProgress: (loaded, max, tokens) => {
           setPagesLoaded(loaded);
           setPageTarget(max);
+          const shown = mode === "full" ? tokens : mergePool(poolRef.current, tokens, cutoff);
+          setPool(shown);
+          setScanned(shown.length);
         },
       });
       if (controller.signal.aborted) return;
@@ -118,7 +121,7 @@ export function useScanner() {
       }
     } catch (err) {
       if (controller.signal.aborted) return;
-      const message = err instanceof Error ? err.message : "Scan failed";
+      const message = err instanceof Error ? err.message : "Could not load data";
       setError(message);
       setStatus("error");
     } finally {

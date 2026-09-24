@@ -48,19 +48,11 @@ function wait(ms: number, signal?: AbortSignal): Promise<void> {
   });
 }
 
-export async function fetchNewestPage(page: number, signal?: AbortSignal): Promise<Token[]> {
-  const body = await fetchJson<TokensResponse>(
-    `${API}/tokens?sort=newest&page=${page}&pageSize=${PAGE_SIZE}`,
-    signal,
-  );
-  return body.data.tokens;
-}
-
 export async function scanNewest(options: {
   maxPages: number;
   cutoff: number | null;
   signal?: AbortSignal;
-  onProgress?: (loaded: number, target: number) => void;
+  onProgress?: (loaded: number, target: number, tokens: Token[]) => void;
 }): Promise<{ tokens: Token[]; pagesLoaded: number; catalogTotal: number }> {
   const byMint = new Map<string, Token>();
   let page = 1;
@@ -95,7 +87,7 @@ export async function scanNewest(options: {
       }
     }
 
-    options.onProgress?.(pagesLoaded, options.maxPages);
+    options.onProgress?.(pagesLoaded, options.maxPages, [...byMint.values()]);
     page += batch.length;
   }
 
