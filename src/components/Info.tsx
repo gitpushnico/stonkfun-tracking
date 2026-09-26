@@ -49,24 +49,34 @@ const SECTIONS = [
 
 export function Info() {
   return (
-    <section className="info" aria-label="Info">
-      <dl>
-        {SECTIONS.map((section) => (
-          <div key={section.title}>
-            <dt>{section.title}</dt>
-            <dd>{section.body}</dd>
-          </div>
-        ))}
-        <div>
-          <dt>Source</dt>
-          <dd>
-            <a href={REPO} target="_blank" rel="noreferrer">
-              {REPO.replace("https://", "")}
-            </a>
-            . Open an issue to request a change. Pull requests welcome. Not affiliated with StonkFun.
-          </dd>
+    <section className="grid gap-6 sm:grid-cols-2" aria-label="Info">
+      {SECTIONS.map((section) => (
+        <div key={section.title} className="grid content-start gap-1">
+          <h2 className="text-[0.8rem] font-medium text-muted-foreground">{section.title}</h2>
+          <p className="m-0 max-w-[46ch] text-sm">{section.body}</p>
         </div>
-      </dl>
+      ))}
+      <div className="grid content-start gap-1">
+        <h2 className="text-[0.8rem] font-medium text-muted-foreground">Source</h2>
+        <p className="m-0 max-w-[46ch] text-sm">
+          <a className="underline-offset-4 hover:underline" href={REPO} target="_blank" rel="noreferrer">
+            {REPO.replace("https://", "")}
+          </a>
+          . Open an issue to request a change. Pull requests welcome. Not affiliated with StonkFun.
+        </p>
+      </div>
+      <div className="grid content-start gap-1">
+        <h2 className="text-[0.8rem] font-medium text-muted-foreground">Privacy</h2>
+        <p className="m-0 max-w-[46ch] text-sm">
+          No account. Filters stay in this browser. Token data comes from StonkFun, so they see the
+          request. Vercel serves the page and logs the visit. Google delivers the typeface. Questions
+          about this, or a request under EU data law:{" "}
+          <a className="underline-offset-4 hover:underline" href="mailto:privacy@nicolaj.xyz">
+            privacy@nicolaj.xyz
+          </a>
+          .
+        </p>
+      </div>
     </section>
   );
 }

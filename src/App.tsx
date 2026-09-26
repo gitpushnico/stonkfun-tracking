@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Controls } from "./components/Controls";
 import { Info } from "./components/Info";
 import { Results } from "./components/Results";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { clock } from "./format";
 import { DEFAULT_FILTERS, useScanner } from "./useScanner";
 
@@ -21,14 +23,16 @@ export default function App() {
   }, [infoOpen]);
 
   return (
-    <div className="app">
-      <header className="mast">
+    <div className="mx-auto grid w-[min(1080px,calc(100%-40px))] gap-10 py-10 pb-16">
+      <header className="flex items-end justify-between gap-6 max-[860px]:flex-col max-[860px]:items-start">
         <div>
-          <h1>StonkFun Tracking</h1>
-          <p className="tag">Filter tokens by market cap, volume, and age.</p>
+          <h1 className="m-0 text-[1.35rem] font-semibold tracking-tight">StonkFun Tracking</h1>
+          <p className="mt-1.5 max-w-[42ch] text-[0.95rem] text-muted-foreground">
+            Filter tokens by market cap, volume, and age.
+          </p>
         </div>
-        <div className="mast-meta">
-          <p>
+        <div className="grid justify-items-end gap-2 text-right max-[860px]:justify-items-start max-[860px]:text-left">
+          <p className="m-0 text-[0.9rem] text-muted-foreground">
             {scan.status === "loading" && scan.scanned === 0
               ? "Loading tokens…"
               : scan.status === "loading"
@@ -37,29 +41,34 @@ export default function App() {
                   ? scan.error
                   : `${count} found${scan.updatedAt ? ` · ${clock(new Date(scan.updatedAt))}` : ""}`}
           </p>
-          <div className="mast-actions">
-            <button type="button" className="text-link" onClick={() => scan.setLive((on) => !on)}>
+          <div className="flex justify-end gap-1 max-[860px]:justify-start">
+            <Button variant="ghost" size="sm" onClick={() => scan.setLive((on) => !on)}>
               {scan.live ? "Pause" : "Resume"}
-            </button>
-            <button type="button" className="text-link" onClick={() => void scan.refresh()}>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => void scan.refresh()}>
               Refresh
-            </button>
-            <button type="button" className="text-link" onClick={() => scan.setFilters(DEFAULT_FILTERS)}>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => scan.setFilters(DEFAULT_FILTERS)}>
               Reset
-            </button>
-            <button
-              type="button"
-              className={infoOpen ? "text-link on" : "text-link"}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               aria-expanded={infoOpen}
               onClick={() => setInfoOpen((open) => !open)}
             >
               Info
-            </button>
+            </Button>
           </div>
         </div>
       </header>
 
-      {infoOpen && <Info />}
+      {infoOpen && (
+        <>
+          <Separator />
+          <Info />
+        </>
+      )}
 
       <Controls filters={filters} onChange={scan.setFilters} categories={scan.categories} />
 

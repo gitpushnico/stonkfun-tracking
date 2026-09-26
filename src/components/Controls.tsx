@@ -1,5 +1,15 @@
 import { PRESETS } from "../filters";
 import type { AgePreset, Filters, SortKey } from "../types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const AGES: { id: AgePreset; label: string }[] = [
   { id: "1h", label: "1 hour" },
@@ -35,30 +45,30 @@ export function Controls({ filters, onChange, categories }: Props) {
   };
 
   return (
-    <section className="controls" aria-label="Filters">
-      <div className="control-grid">
-        <fieldset className="field">
-          <legend>Market cap</legend>
-          <div className="pair">
+    <section className="grid gap-4" aria-label="Filters">
+      <div className="grid grid-cols-[1.1fr_0.7fr_1.2fr_1fr] gap-6 max-[860px]:grid-cols-2 max-[560px]:grid-cols-1">
+        <fieldset className="m-0 grid content-start gap-2 border-0 p-0">
+          <legend className="mb-0.5 p-0 text-[0.8rem] text-muted-foreground">Market cap</legend>
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
             <label>
               <span className="sr-only">Minimum</span>
-              <input
+              <Input
                 inputMode="numeric"
                 value={filters.mcapMin}
                 onChange={(e) => setMcap(parseAmount(e.target.value), filters.mcapMax)}
               />
             </label>
-            <span className="pair-join">–</span>
+            <span className="text-muted-foreground">–</span>
             <label>
               <span className="sr-only">Maximum</span>
-              <input
+              <Input
                 inputMode="numeric"
                 value={filters.mcapMax}
                 onChange={(e) => setMcap(filters.mcapMin, parseAmount(e.target.value))}
               />
             </label>
           </div>
-          <div className="text-links" role="group" aria-label="Quick ranges">
+          <div className="flex flex-wrap gap-1" role="group" aria-label="Quick ranges">
             {PRESETS.map((preset) => {
               const active =
                 filters.mcapMin === preset.mcapMin &&
@@ -66,10 +76,11 @@ export function Controls({ filters, onChange, categories }: Props) {
                 filters.volMin === preset.volMin &&
                 filters.age === preset.age;
               return (
-                <button
+                <Button
                   key={preset.id}
                   type="button"
-                  className={active ? "text-link on" : "text-link"}
+                  variant={active ? "secondary" : "ghost"}
+                  size="sm"
                   onClick={() =>
                     onChange({
                       ...filters,
@@ -81,17 +92,17 @@ export function Controls({ filters, onChange, categories }: Props) {
                   }
                 >
                   {preset.label}
-                </button>
+                </Button>
               );
             })}
           </div>
         </fieldset>
 
-        <fieldset className="field">
-          <legend>Min. volume (24h)</legend>
-          <label className="solo">
+        <fieldset className="m-0 grid content-start gap-2 border-0 p-0">
+          <legend className="mb-0.5 p-0 text-[0.8rem] text-muted-foreground">Min. volume (24h)</legend>
+          <label>
             <span className="sr-only">Minimum volume</span>
-            <input
+            <Input
               inputMode="numeric"
               value={filters.volMin}
               onChange={(e) => patch({ volMin: parseAmount(e.target.value) })}
@@ -99,53 +110,66 @@ export function Controls({ filters, onChange, categories }: Props) {
           </label>
         </fieldset>
 
-        <fieldset className="field">
-          <legend>Age</legend>
-          <div className="seg" role="group">
+        <fieldset className="m-0 grid content-start gap-2 border-0 p-0">
+          <legend className="mb-0.5 p-0 text-[0.8rem] text-muted-foreground">Age</legend>
+          <ToggleGroup
+            value={[filters.age]}
+            onValueChange={(next) => {
+              const age = Array.isArray(next) ? next[0] : next;
+              if (age) patch({ age: age as AgePreset });
+            }}
+            variant="outline"
+            size="sm"
+            spacing={0}
+          >
             {AGES.map((age) => (
-              <button
-                key={age.id}
-                type="button"
-                className={filters.age === age.id ? "seg-btn on" : "seg-btn"}
-                onClick={() => patch({ age: age.id })}
-              >
+              <ToggleGroupItem key={age.id} value={age.id}>
                 {age.label}
-              </button>
+              </ToggleGroupItem>
             ))}
-          </div>
+          </ToggleGroup>
         </fieldset>
 
-        <fieldset className="field">
-          <legend>Sort</legend>
-          <div className="seg" role="group">
+        <fieldset className="m-0 grid content-start gap-2 border-0 p-0">
+          <legend className="mb-0.5 p-0 text-[0.8rem] text-muted-foreground">Sort</legend>
+          <ToggleGroup
+            value={[filters.sort]}
+            onValueChange={(next) => {
+              const sort = Array.isArray(next) ? next[0] : next;
+              if (sort) patch({ sort: sort as SortKey });
+            }}
+            variant="outline"
+            size="sm"
+            spacing={0}
+          >
             {SORTS.map((sort) => (
-              <button
-                key={sort.id}
-                type="button"
-                className={filters.sort === sort.id ? "seg-btn on" : "seg-btn"}
-                onClick={() => patch({ sort: sort.id })}
-              >
+              <ToggleGroupItem key={sort.id} value={sort.id}>
                 {sort.label}
-              </button>
+              </ToggleGroupItem>
             ))}
-          </div>
+          </ToggleGroup>
         </fieldset>
       </div>
 
       {categories.length > 0 && (
-        <label className="pair-filter">
+        <label className="flex max-w-[280px] items-baseline gap-3 text-[0.9rem] text-muted-foreground">
           <span>Pair</span>
-          <select
-            value={filters.category ?? ""}
-            onChange={(e) => patch({ category: e.target.value || null })}
+          <Select
+            value={filters.category ?? "all"}
+            onValueChange={(value) => patch({ category: !value || value === "all" ? null : value })}
           >
-            <option value="">All</option>
-            {categories.map(([label, count]) => (
-              <option key={label} value={label}>
-                {label} ({count})
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full" size="sm">
+              <SelectValue>{(value) => (value === "all" || value == null ? "All" : String(value))}</SelectValue>
+            </SelectTrigger>
+            <SelectContent align="start">
+              <SelectItem value="all">All</SelectItem>
+              {categories.map(([label, count]) => (
+                <SelectItem key={label} value={label}>
+                  {label} ({count})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
       )}
     </section>

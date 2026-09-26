@@ -34,6 +34,6 @@ export function applyFilters(tokens: Token[], filters: Filters, now = Date.now()
 
 export const PRESETS = [
   { id: "band", label: "4 – 25k", mcapMin: 4_000, mcapMax: 25_000, volMin: 1_000, age: "24h" as const },
-  { id: "ten", label: "~10k", mcapMin: 8_000, mcapMax: 12_000, volMin: 1_000, age: "24h" as const },
-  { id: "early", label: "Under 5k", mcapMin: 0, mcapMax: 5_000, volMin: 500, age: "6h" as const },
+  { id: "ten", label: "8 – 12k", mcapMin: 8_000, mcapMax: 12_000, volMin: 1_000, age: "24h" as const },
+  { id: "early", label: "0 – 5k", mcapMin: 0, mcapMax: 5_000, volMin: 500, age: "6h" as const },
 ] as const;
