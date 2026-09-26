@@ -69,8 +69,8 @@ export function Info() {
         <h2 className="text-[0.8rem] font-medium text-muted-foreground">Privacy</h2>
         <p className="m-0 max-w-[46ch] text-sm">
           No account. Filters stay in this browser. Token data comes from StonkFun, so they see the
-          request. Vercel serves the page and logs the visit. Google delivers the typeface. Questions
-          about this, or a request under EU data law:{" "}
+          request. Vercel serves the page and logs the visit. Google delivers the typeface. Nicolaj
+          Hasberg is responsible for this site. Questions about this, or a request under EU data law:{" "}
           <a className="underline-offset-4 hover:underline" href="mailto:privacy@nicolaj.xyz">
             privacy@nicolaj.xyz
           </a>
