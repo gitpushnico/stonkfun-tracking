@@ -1,5 +1,7 @@
 # StonkFun Tracking
 
+[stonkfun-tracking.vercel.app](https://stonkfun-tracking.vercel.app)
+
 Unofficial companion to [StonkFun](https://www.stonkfun.xyz). Filter tokens by market cap, 24h volume, and age at the same time.
 
 ```bash
